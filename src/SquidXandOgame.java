@@ -84,3 +84,48 @@ public class SquidXandOgame extends JFrame {
         welcomePanel.add(startBtn, BorderLayout.SOUTH);
         mainPanel.add(welcomePanel, "welcome");
     }
+
+    
+    void setupNameInputScreen() {
+        inputPanel = new JPanel(new GridLayout(8, 1, 10, 10));
+        inputPanel.setBackground(new Color(25, 25, 25));
+        inputPanel.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
+
+        JLabel label1 = new JLabel("Enter Player X Name:");
+        label1.setForeground(Color.WHITE);
+        inputPanel.add(label1);
+
+        player1Field = new JTextField();
+        inputPanel.add(player1Field);
+
+        player1NumLabel = new JLabel();
+        player1NumLabel.setForeground(Color.pink);
+        inputPanel.add(player1NumLabel);
+
+        JLabel label2 = new JLabel("Enter Player O Name:");
+        label2.setForeground(Color.WHITE);
+        inputPanel.add(label2);
+
+        player2Field = new JTextField();
+        inputPanel.add(player2Field);
+
+        player2NumLabel = new JLabel();
+        player2NumLabel.setForeground(Color.pink);
+        inputPanel.add(player2NumLabel);
+
+        JButton continueBtn = new JButton("Continue");
+        continueBtn.setFont(new Font("Arial Black", Font.BOLD, 16));
+        continueBtn.setBackground(Color.PINK);
+        continueBtn.setForeground(Color.BLACK);
+        continueBtn.addActionListener(e -> {
+            player1Name = player1Field.getText().trim().isEmpty() ? "Player 1" : player1Field.getText().trim();
+            player2Name = player2Field.getText().trim().isEmpty() ? "Player 2" : player2Field.getText().trim();
+            assignNumbers();
+            layout.show(mainPanel, "game");
+            startTimer();
+        });
+
+        inputPanel.add(continueBtn);
+        mainPanel.add(inputPanel, "input");
+    }
+

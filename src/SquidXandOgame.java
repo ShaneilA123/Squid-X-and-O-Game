@@ -281,3 +281,35 @@ void setupGameScreen() {
     void stopTimer() {
         if (turnTimer != null) turnTimer.stop();
     }
+    void playSound(String path) {
+        try {
+            AudioInputStream audio = AudioSystem.getAudioInputStream(new File(path));
+            Clip clip = AudioSystem.getClip();
+            clip.open(audio);
+            clip.start();
+        } catch (Exception e) {
+            System.out.println("Sound Error: " + e.getMessage());
+        }
+    }
+
+    void playThemeSong() {
+        themeThread = new Thread(() -> {
+            try {
+                FileInputStream fis = new FileInputStream("C:\\Users\\Hp\\Desktop\\200LVL vids\\Squid-Game-OST-Pink-Soldiers.mp3");
+                Player player = new Player(fis);
+                player.play();
+            } catch (Exception e) {
+                System.out.println("Theme MP3 Error: " + e.getMessage());
+            }
+        });
+        themeThread.start();
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(SquidXandOgame::new);
+    }
+}
+
+
+
+

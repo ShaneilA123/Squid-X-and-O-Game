@@ -191,3 +191,93 @@ void setupGameScreen() {
 
         mainPanel.add(gamePanel, "game");
     }
+ void handleMove(JButton btn, int pos) {
+        playSound("C:\\Users\\Hp\\Desktop\\sound\\click.wav");
+        btn.setIcon(isPlayer1Turn ? xImage : oImage);
+        btn.setEnabled(false);
+
+        if (isPlayer1Turn) player1Moves.add(pos);
+        else player2Moves.add(pos);
+
+        moveHistory.push(pos);
+        stopTimer();
+
+        if (checkWin()) {
+            playSound("C:\\Users\\Hp\\Desktop\\sound\\569847__danlucaz__gun-shot-1.wav");
+            if (isPlayer1Turn) player1Score++; else player2Score++;
+            updateScore();
+            JOptionPane.showMessageDialog(this, (isPlayer1Turn ? player1Num : player2Num) + " wins!");
+            resetBoard();
+        } else if (player1Moves.size() + player2Moves.size() == 9) {
+            JOptionPane.showMessageDialog(this, "It's a draw!");
+            resetBoard();
+        } else {
+            isPlayer1Turn = !isPlayer1Turn;
+            turnLabel.setText((isPlayer1Turn ? player1Name : player2Name) + "'s Turn (" + (isPlayer1Turn ? player1Num : player2Num) + ")");
+            startTimer();
+        }
+    }
+
+    void undoMove() {
+        if (!moveHistory.isEmpty()) {
+            int pos = moveHistory.pop();
+            buttons[pos - 1].setIcon(null);
+            buttons[pos - 1].setEnabled(true);
+            if (isPlayer1Turn) player2Moves.remove((Integer) pos);
+            else player1Moves.remove((Integer) pos);
+            isPlayer1Turn = !isPlayer1Turn;
+            turnLabel.setText((isPlayer1Turn ? player1Name : player2Name) + "'s Turn (" + (isPlayer1Turn ? player1Num : player2Num) + ")");
+            startTimer();
+        }
+    }
+
+    boolean checkWin() {
+        int[][] wins = {
+                {1, 2, 3}, {4, 5, 6}, {7, 8, 9},
+                {1, 4, 7}, {2, 5, 8}, {3, 6, 9},
+                {1, 5, 9}, {3, 5, 7}
+        };
+        ArrayList<Integer> moves = isPlayer1Turn ? player1Moves : player2Moves;
+        for (int[] win : wins) {
+            if (moves.contains(win[0]) && moves.contains(win[1]) && moves.contains(win[2])) return true;
+        }
+        return false;
+    }
+
+    void resetBoard() {
+        for (JButton btn : buttons) {
+            btn.setIcon(null);
+            btn.setEnabled(true);
+        }
+        player1Moves.clear();
+        player2Moves.clear();
+        moveHistory.clear();
+        isPlayer1Turn = true;
+        assignNumbers();
+    }
+
+    void updateScore() {
+        scoreLabel.setText("Score: " + player1Score + " - " + player2Score);
+    }
+
+    void startTimer() {
+        timeRemaining = 10;
+        timerLabel.setText("Time left: " + timeRemaining + "s");
+
+        turnTimer = new Timer(1000, e -> {
+            timeRemaining--;
+            timerLabel.setText("Time left: " + timeRemaining + "s");
+            if (timeRemaining <= 0) {
+                stopTimer();
+                JOptionPane.showMessageDialog(this, "Time's up! Turn skipped.");
+                isPlayer1Turn = !isPlayer1Turn;
+                turnLabel.setText((isPlayer1Turn ? player1Name : player2Name) + "'s Turn");
+                startTimer();
+            }
+        });
+        turnTimer.start();
+    }
+
+    void stopTimer() {
+        if (turnTimer != null) turnTimer.stop();
+    }

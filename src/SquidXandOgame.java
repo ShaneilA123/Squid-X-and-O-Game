@@ -129,3 +129,65 @@ public class SquidXandOgame extends JFrame {
         mainPanel.add(inputPanel, "input");
     }
 
+   void assignNumbers() {
+        Random rand = new Random();
+        do {
+            player1Num = rand.nextInt(357) + 100;
+            player2Num = rand.nextInt(357) + 100;
+        } while (player1Num == player2Num);
+
+        player1NumLabel.setText(player1Name + ", you are now Player " + player1Num);
+        player2NumLabel.setText(player2Name + ", you are now Player " + player2Num);
+
+        JOptionPane.showMessageDialog(this, player1Name + ", you are now Player " + player1Num + "\n" +
+                player2Name + ", you are now Player " + player2Num);
+
+        turnLabel.setText("Player " + player1Num + "'s Turn");
+    }
+
+void setupGameScreen() {
+        gamePanel = new JPanel(new BorderLayout());
+        gamePanel.setBackground(Color.BLACK);
+
+        JPanel grid = new JPanel(new GridLayout(3, 3, 5, 5));
+        grid.setBackground(Color.BLACK);
+        grid.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        for (int i = 0; i < 9; i++) {
+            final int pos = i + 1;
+            buttons[i] = new JButton();
+            buttons[i].setBackground(Color.DARK_GRAY);
+            buttons[i].setFocusPainted(false);
+            buttons[i].addActionListener(e -> handleMove((JButton) e.getSource(), pos));
+            grid.add(buttons[i]);
+        }
+
+        JPanel topPanel = new JPanel(new GridLayout(3, 1));
+        topPanel.setBackground(Color.BLACK);
+
+        turnLabel = new JLabel("Turn", SwingConstants.CENTER);
+        turnLabel.setFont(new Font("Arial black", Font.BOLD, 18));
+        turnLabel.setForeground(Color.WHITE);
+
+        timerLabel = new JLabel("Time left: 10s", SwingConstants.CENTER);
+        timerLabel.setForeground(Color.PINK);
+
+        scoreLabel = new JLabel("Score: 0 - 0", SwingConstants.CENTER);
+        scoreLabel.setForeground(Color.LIGHT_GRAY);
+
+        topPanel.add(turnLabel);
+        topPanel.add(timerLabel);
+        topPanel.add(scoreLabel);
+
+        JButton undo = new JButton("Undo Move");
+        undo.setBackground(Color.PINK);
+        undo.setForeground(Color.BLACK);
+        undo.setFont(new Font("Arial", Font.BOLD, 16));
+        undo.addActionListener(e -> undoMove());
+
+        gamePanel.add(topPanel, BorderLayout.NORTH);
+        gamePanel.add(grid, BorderLayout.CENTER);
+        gamePanel.add(undo, BorderLayout.SOUTH);
+
+        mainPanel.add(gamePanel, "game");
+    }
